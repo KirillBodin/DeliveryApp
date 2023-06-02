@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Shop Page</title>
+    <style>body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    .header {
+        background-color: #333;
+        color: #fff;
+        padding: 10px;
+        overflow: auto;
+    }
+
+
+    .disabled {
+        opacity: 0.5;
+        pointer-events: none;
+    }
+
+    .brand {
+        float: left;
+    }
+
+    .container {
+        display: flex;
+        min-height: calc(100vh - 40px);
+    }
+
+    .sidebar {
+        background-color: #eee;
+        padding: 20px;
+        width: 10%;
+    }
+
+    .shops {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .shops .shop {
+        background-color: #fff;
+        border-radius: 5px;
+        padding: 10px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        width: 80%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .main {
+        flex-grow: 1;
+        padding: 20px;
+        background-color: #fff;
+    }
+
+    .dish-details {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .dish {
+        flex: 0 0 calc(50% - 20px);
+        margin: 10px;
+        padding: 10px;
+        background-color: #eee;
+        border-radius: 5px;
+        text-align: center;
+        display: inline-block;
+        box-sizing: border-box;
+        width: 48%;
+    }
+
+    @media screen and (max-width: 600px) {
+        .dish {
+            flex-basis: calc(100% - 20px);
+        }
+    }
+
+    .dish-name {
+        font-size: 18px;
+        margin-bottom: 5px;
+    }
+
+    .dish-image {
+        width: 400px;
+        height: 200px;
+        object-fit: cover;
+        margin-bottom: 10px;
+    }
+
+    .dish-price {
+        font-size: 16px;
+        color: #888;
+    }
+
+    .add-to-cart-btn {
+        background-color: #333;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        margin-top: 10px;
+    }
+
+    .add-to-cart-btn:hover {
+        background-color: #555;
+    }
+
+    .shop.disabled {
+        pointer-events: none;
+        opacity: 0.5;
+    }
+
+    .reset-btn {
+        background-color: #333;
+        color: #fff;
+
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        float: right;
+
+    }
+
+    .reset-btn:hover {
+        background-color: #555;
+    }
+
+    .nav-link {
+        color: #fff;
+        margin-right: 10px;
+        text-decoration: none;
+    }
+
+    .nav-link:hover {
+        text-decoration: underline;
+    }</style>
+</head>
+
+<body>
+<div class="header">
+    <div class="brand">
+        <a href="shop.html" class="nav-link">Shop</a> | <a href="cart.html" class="nav-link">Cart</a> | <a
+            href="coupons.html" class="nav-link">Coupons</a>
+    </div>
+    <button class="reset-btn">Reset</button>
+</div>
+
+
+<div class="container">
+    <div class="sidebar">
+        <div class="shops">
+        </div>
+    </div>
+
+    <div class="main">
+        <div class="dish-details">
+        </div>
+    </div>
+</div>
+
+<script>
+    function getRestaurantData(callback) {
+        fetch('/restaurants')
+            .then(response => response.json())
+            .then(data => callback(null, data))
+            .catch(err => {
+                console.error('Error retrieving restaurant data:', err);
+                callback(err, null);
+            });
+    }
+
+    function handleReset() {
+        const shopElements = document.querySelectorAll('.shop');
+        const dishDetailsElement = document.querySelector('.dish-details');
+        shopElements.forEach((shopElement) => {
+            shopElement.classList.remove('disabled');
+        });
+
+        dishDetailsElement.innerHTML = '';
+    }
+
+    const resetButton = document.querySelector('.reset-btn');
+    resetButton.addEventListener('click', handleReset);
+
+
+    function generateRestaurantList(restaurants) {
+        const shopsElement = document.querySelector('.shops');
+
+        restaurants.forEach((restaurant) => {
+            const shopElement = document.createElement('div');
+            shopElement.classList.add('shop');
+            shopElement.textContent = restaurant.name;
+
+            shopElement.dataset.restaurantId = restaurant.id;
+
+            shopElement.addEventListener('click', () => showDishes(restaurant));
+
+            shopsElement.appendChild(shopElement);
+        });
+    }
+
+    function showDishes(restaurant) {
+        const shopElements = document.querySelectorAll('.shop');
+        const dishElement = document.createElement('div');
+        const dishDetails = document.querySelector('.dish-details');
+        const dishImage = document.createElement('img');
+        const dishName = document.createElement('div');
+        const dishPrice = document.createElement('div');
+        const addToCartButton = document.createElement('button');
+
+        shopElements.forEach((shopElement) => {
+            if (shopElement.textContent !== restaurant.name) {
+                shopElement.classList.add('disabled');
+            }
+        });
+
+
+        dishDetails.innerHTML = '';
+
+
+        restaurant.dishes.forEach((dish) => {
+
+            dishElement.classList.add('dish');
+
+
+            dishImage.classList.add('dish-image');
+            dishImage.src = dish.image;
+            dishElement.appendChild(dishImage);
+
+
+            dishName.classList.add('dish-name');
+            dishName.textContent = dish.name;
+            dishElement.appendChild(dishName);
+
+
+            dishPrice.classList.add('dish-price');
+            dishPrice.textContent = `$${dish.price}`;
+            dishElement.appendChild(dishPrice);
+
+
+            addToCartButton.classList.add('add-to-cart-btn');
+            addToCartButton.textContent = 'Add to Cart';
+            dishElement.appendChild(addToCartButton);
+
+
+            addToCartButton.addEventListener('click', () => addToCart(dish));
+
+            dishDetails.appendChild(dishElement);
+        });
+
+        dishDetails.style.display = 'block';
+    }
+
+    function addToCart(dish) {
+        const cartItems = localStorage.getItem('cartItems');
+        const updatedCartItems = cartItems ? JSON.parse(cartItems) : [];
+        updatedCartItems.push(dish);
+        localStorage.setItem('cartItems', JSON.stringify(updatedCartItems));
+    }
+
+    getRestaurantData((err, restaurants) => {
+        if (err) {
+            console.error('Error retrieving restaurant data:', err);
+            return;
+        }
+        generateRestaurantList(restaurants);
+    });
+
+</script>
+</body>
+</html>

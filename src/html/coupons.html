@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Coupons Page</title>
+    <style>
+        .coupon-container {
+            width: 200px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .coupon {
+            flex: 0 0 calc(50% - 20px);
+            margin: 10px;
+            padding: 10px;
+            background-color: #eee;
+            border-radius: 5px;
+            text-align: center;
+            box-sizing: border-box;
+            width: 30%;
+        }
+
+        .coupon-image {
+            width: 400px;
+            height: 200px;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+
+        .coupon-details {
+            flex-grow: 1;
+        }
+
+        .coupon-name {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .copy-button {
+            padding: 5px 10px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .main {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .sidebar {
+            width: 90%;
+            margin: 20px auto;
+            background-color: #eee;
+            border-radius: 5px;
+            height: 600px;
+        }
+
+        #coupons-container {
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+
+    </style>
+</head>
+<body>
+<div class="header">
+    <div class="brand">
+        <a href="shop.html" class="nav-link">Shop</a> | <a href="cart.html" class="nav-link">Cart</a> | <a href="coupons.html" class="nav-link">Coupons</a>
+    </div>
+</div>
+
+<div class="main">
+    <div class="sidebar">
+        <div class="coupon-container" id="coupons-container"></div>
+    </div>
+</div>
+
+<script>
+    function getCoupons() {
+        return fetch('/coupons')
+            .then(response => response.json())
+            .catch(err => {
+                console.error('Error retrieving coupons:', err);
+                return [];
+            });
+    }
+
+    function createCouponElement(coupon) {
+        const couponElement = document.createElement('div');
+        const couponImageElement = document.createElement('img');
+        const couponDetailsElement = document.createElement('div');
+        const couponNameElement = document.createElement('div');
+        const copyButton = document.createElement('button');
+
+        couponElement.classList.add('coupon');
+
+        couponImageElement.classList.add('coupon-image');
+        couponImageElement.src = coupon.image;
+        couponElement.appendChild(couponImageElement);
+
+        couponDetailsElement.classList.add('coupon-details');
+
+        couponNameElement.classList.add('coupon-name');
+        couponNameElement.textContent = coupon.name;
+        couponDetailsElement.appendChild(couponNameElement);
+
+        copyButton.classList.add('copy-button');
+        copyButton.textContent = 'Copy';
+        couponDetailsElement.appendChild(copyButton);
+
+        couponElement.appendChild(couponDetailsElement);
+
+        copyButton.addEventListener('click', () => copyCouponCode(coupon.code));
+
+        return couponElement;
+    }
+
+    function copyCouponCode(code) {
+        navigator.clipboard.writeText(code)
+            .then(() => {
+                console.log('Coupon code copied to clipboard:', code);
+                alert('Coupon code copied to clipboard!');
+            })
+            .catch(err => {
+                console.error('Error copying coupon code to clipboard:', err);
+                alert('Failed to copy coupon code to clipboard.');
+            });
+    }
+
+    function displayCoupons(coupons) {
+        const couponsContainer = document.getElementById('coupons-container');
+
+        coupons.forEach(coupon => {
+            const couponElement = createCouponElement(coupon);
+            couponsContainer.appendChild(couponElement);
+        });
+    }
+
+    getCoupons()
+        .then(coupons => displayCoupons(coupons));
+</script>
+</body>
+</html>

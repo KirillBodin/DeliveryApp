@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cart Page</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif:ital@1&family=Poppins:wght@400;500;600&display=swap');
+
+        .wrapper .captcha-area {
+            display: flex;
+            height: 65px;
+            margin: 30px 0 20px;
+            align-items: center;
+            justify-content: space-between;
+
+        }
+
+        .captcha-area .captcha-img {
+            height: 100%;
+            width: 300px;
+            user-select: none;
+            background: #000;
+            border-radius: 5px;
+            position: relative;
+        }
+
+        .captcha-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 5px;
+            opacity: 0.95;
+        }
+
+        .captcha-img .captcha {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 100%;
+            color: #fff;
+            font-size: 35px;
+            text-align: center;
+            letter-spacing: 10px;
+            transform: translate(-50%, -50%);
+            text-shadow: 0px 0px 2px #b1b1b1;
+            font-family: 'Noto Serif', serif;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            overflow: auto;
+        }
+
+        .brand {
+            float: left;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .cart-container {
+            width: 50%;
+        }
+
+        .customer-info {
+            width: 40%;
+            margin-right: 20px;
+        }
+
+        .customer-info h2 {
+            margin-bottom: 10px;
+        }
+
+        .customer-info div {
+            margin-bottom: 10px;
+        }
+
+        .customer-info label {
+            display: inline-block;
+            width: 100px;
+        }
+
+        .cart-items {
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .cart-items h2 {
+            margin-bottom: 10px;
+        }
+
+        .cart-item {
+            flex: 0 0 calc(33.33% - 20px);
+            margin: 10px;
+            padding: 10px;
+            background-color: #eee;
+            border-radius: 5px;
+            text-align: center;
+            display: inline-block;
+            box-sizing: border-box;
+        }
+
+        .cart-item-name {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .cart-item-price {
+            font-size: 16px;
+            color: #888;
+        }
+
+        .cart-item-image {
+            width: 400px;
+            height: 200px;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+
+        .total-price,
+        .submit-btn {
+            margin-top: 10px;
+        }
+
+        .bottom-section {
+            display: flex;
+            flex-direction: column;
+        }
+
+
+        .submit-btn:hover {
+            background-color: #555;
+        }
+
+        .cross-icon {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            font-size: 14px;
+            color: red;
+            cursor: pointer;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"] {
+            font-family: Arial, sans-serif;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .coupon-input-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .coupon-input {
+            width: 100px;
+            padding: 5px;
+            margin-left: 10px;
+        }
+
+        .apply-coupon-button {
+            padding: 5px 10px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        input[type=text] {
+            padding: 12px 20px;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+
+        canvas {
+            pointer-events: none;
+        }
+
+
+    </style>
+</head>
+<body>
+<div class="header">
+    <div class="brand">
+        <a href="shop.html" class="nav-link">Shop</a> | <a href="cart.html" class="nav-link">Cart</a> | <a
+            href="coupons.html" class="nav-link">Coupons</a>
+    </div>
+</div>
+
+
+<div class="container">
+    <div class="customer-info">
+        <div>
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name">
+        </div>
+        <div>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email">
+        </div>
+        <div>
+            <label for="phone">Phone:</label>
+            <input type="tel" id="phone" name="phone">
+        </div>
+        <div>
+            <label for="address">Address:</label>
+            <input type="text" id="address" name="address">
+        </div>
+    </div>
+    <div class="cart-container">
+        <div class="cart-items">
+            <h2>Cart Items</h2>
+        </div>
+
+
+        <div class="coupon-input-container">
+            <label for="coupon-input">Coupon:</label>
+            <input type="password" class="coupon-input" id="coupon-input" placeholder="Enter coupon code"
+                   style="width: 200px;">
+            <input type="button" value="Apply Coupon" id="apply-coupon-button">
+        </div>
+        <div id="discount-info"></div>
+        <div class="total-price">
+            <span>Total Price:</span>
+            <span id="total-price">$0.00</span>
+        </div>
+
+        <div class="wrapper">
+            <div class="captcha-area">
+                <div class="captcha-img">
+                    <span class="captcha"></span>
+                </div>
+            </div>
+            <button class="reload-btn">Reload captcha</button>
+            <form action="#" class="input-area">
+                <input type="text" placeholder="Enter captcha" maxlength="6" spellcheck="false" required
+                       style="width: 200px;">
+                <button class="check-btn">Check</button>
+            </form>
+            <div class="status-text"></div>
+        </div>
+
+
+        <button class="submit-btn" id="submit-btn">Submit Order</button>
+
+    </div>
+
+</div>
+
+
+<script>
+    document.getElementById('apply-coupon-button').addEventListener('click', applyCoupon);
+
+    let couponApplied = false;
+
+    function applyCoupon() {
+        const couponCode = document.getElementById('coupon-input').value;
+
+        if (couponApplied) {
+            alert('Coupon has already been used.');
+            return;
+        }
+
+        fetch(`/coupons/${couponCode}`)
+            .then(response => response.json())
+            .then(coupon => {
+                if (coupon) {
+                    const discount = coupon.discount;
+                    const totalPriceElement = document.getElementById('total-price');
+                    let totalPrice = parseFloat(totalPriceElement.textContent.replace('$', ''));
+
+                    if (!isNaN(discount) && discount >= 0) {
+                        const discountedPrice = totalPrice - discount;
+
+                        document.getElementById('discount-info').textContent = `Discount applied: ${discount}$`;
+
+                        totalPriceElement.textContent = discountedPrice.toFixed(2);
+
+                        couponApplied = true;
+                    } else {
+                        alert('Invalid discount value');
+                    }
+                } else {
+                    alert('Invalid coupon code');
+                }
+            })
+            .catch(err => {
+                console.error('Error applying coupon:', err);
+                alert('Failed to apply coupon.');
+            });
+    }
+
+
+    let captchaSolved = false;
+    const captcha = document.querySelector(".captcha"),
+        reloadBtn = document.querySelector(".reload-btn"),
+        inputField = document.querySelector(".input-area input"),
+        checkBtn = document.querySelector(".check-btn"),
+        statusTxt = document.querySelector(".status-text");
+
+    let allCharacters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
+        'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd',
+        'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's',
+        't', 'u', 'v', 'w', 'x', 'y', 'z', 0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+    function getCaptcha() {
+        for (let i = 0; i < 6; i++) {
+            let randomCharacter = allCharacters[Math.floor(Math.random() * allCharacters.length)];
+            captcha.innerText += ` ${randomCharacter}`;
+        }
+    }
+
+    getCaptcha();
+    reloadBtn.addEventListener("click", () => {
+        removeContent();
+        getCaptcha();
+    });
+
+    checkBtn.addEventListener("click", e => {
+        e.preventDefault();
+        statusTxt.style.display = "block";
+        let inputVal = inputField.value.split('').join(' ');
+        if (inputVal.toLocaleLowerCase() === captcha.innerText.toLocaleLowerCase()) {
+            // Если капча совпадает
+            statusTxt.style.color = "#4db2ec";
+            statusTxt.innerText = "Nice! You don't appear to be a robot.";
+            captchaSolved = true;
+            setTimeout(() => {
+                removeContent();
+                getCaptcha();
+            }, 2000);
+        } else {
+            statusTxt.style.color = "#ff0000";
+            statusTxt.innerText = "Captcha not matched. Please try again!";
+        }
+    });
+
+    function removeContent() {
+        inputField.value = "";
+        captcha.innerText = "";
+        statusTxt.style.display = "none";
+    }
+
+
+    function getCartItems() {
+        const cartItems = localStorage.getItem('cartItems');
+        return cartItems ? JSON.parse(cartItems) : [];
+    }
+
+    function displayCartItems() {
+        const cartItemsElement = document.querySelector('.cart-items');
+        cartItemsElement.innerHTML = ''
+
+        let cartItems = getCartItems();
+        let totalPrice = 0;
+
+        cartItems.forEach((item, index) => {
+            const cartItemElement = document.createElement('div');
+            cartItemElement.classList.add('cart-item');
+
+            const cartItemImageElement = document.createElement('img');
+            cartItemImageElement.src = item.image;
+            cartItemImageElement.classList.add('cart-item-image');
+            cartItemElement.appendChild(cartItemImageElement);
+
+            const cartItemNameElement = document.createElement('div');
+            cartItemNameElement.classList.add('cart-item-name');
+            cartItemNameElement.textContent = item.name;
+            cartItemElement.appendChild(cartItemNameElement);
+
+            const cartItemQuantityElement = document.createElement('input');
+            cartItemQuantityElement.type = 'number';
+            cartItemQuantityElement.classList.add('cart-item-quantity');
+            cartItemQuantityElement.value = item.quantity;
+            cartItemElement.appendChild(cartItemQuantityElement);
+
+            const cartItemPriceElement = document.createElement('div');
+            cartItemPriceElement.classList.add('cart-item-price');
+            cartItemPriceElement.textContent = `$${item.price * item.quantity}`;
+            cartItemElement.appendChild(cartItemPriceElement);
+
+
+            cartItemQuantityElement.addEventListener('change', () => {
+                const quantity = parseInt(cartItemQuantityElement.value, 10);
+                if (quantity === 0) {
+                    const removedItemPrice = item.price * item.quantity;
+                    removeCartItem(index);
+                    cartItemElement.remove();
+                    totalPrice -= removedItemPrice;
+                    displayTotalPrice();
+                } else {
+                    const prevQuantity = item.quantity;
+                    item.quantity = quantity;
+                    cartItemPriceElement.textContent = `$${item.price * item.quantity}`;
+                    cartItems[index] = item;
+                    updateCartItems(cartItems);
+                    totalPrice += item.price * (item.quantity - prevQuantity);
+                    displayTotalPrice();
+                }
+            });
+
+            totalPrice += item.price * item.quantity;
+            cartItemsElement.appendChild(cartItemElement);
+        });
+
+        displayTotalPrice();
+    }
+
+
+    function removeCartItem(index) {
+        const cartItems = getCartItems();
+        const removedItem = cartItems.splice(index, 1)[0];
+        updateCartItems(cartItems);
+
+        const cartItemsElement = document.querySelector('.cart-items');
+        const cartItemElements = cartItemsElement.querySelectorAll('.cart-item');
+        const removedElement = cartItemElements[index];
+        removedElement.remove();
+
+        const removedItemPrice = removedItem.price * removedItem.quantity;
+        displayTotalPrice();
+    }
+
+
+    function updateCartItems() {
+        const cartItems = getCartItems();
+        const inputs = document.querySelectorAll('.cart-item input[type="number"]');
+
+        inputs.forEach((input, index) => {
+            const quantity = parseInt(input.value);
+            cartItems[index].quantity = quantity;
+        });
+
+        localStorage.setItem('cartItems', JSON.stringify(cartItems));
+        displayTotalPrice();
+    }
+
+    function displayTotalPrice() {
+        const cartItems = getCartItems();
+        let totalPrice = 0;
+
+        cartItems.forEach(item => {
+            totalPrice += item.price * item.quantity;
+        });
+
+        const totalPriceElement = document.getElementById('total-price');
+        totalPriceElement.textContent = `$${totalPrice.toFixed(2)}`;
+
+        if (cartItems.length === 0) {
+            totalPriceElement.textContent = '$0.00';
+        }
+    }
+
+
+    function submitOrder() {
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const phone = document.getElementById('phone').value;
+        const address = document.getElementById('address').value;
+        const cartItems = getCartItems();
+
+        if (name.trim() === '' || email.trim() === '' || phone.trim() === '' || address.trim() === '') {
+            alert('Please fill in all required fields.');
+            return;
+        }
+
+        const orderData = {
+            name: name,
+            email: email,
+            phone: phone,
+            address: address,
+            cartItems: cartItems
+        };
+
+        fetch('/submit-order', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(orderData)
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Order submitted successfully:', data);
+                localStorage.removeItem('cartItems');
+                displayCartItems();
+                displayTotalPrice();
+                alert('Order submitted successfully!');
+            })
+            .catch(error => {
+                console.error('Error submitting order:', error);
+            });
+        document.getElementById('name').value = '';
+        document.getElementById('email').value = '';
+        document.getElementById('phone').value = '';
+        document.getElementById('address').value = '';
+    }
+
+
+    function handleFormSubmit(event) {
+        event.preventDefault();
+        if (captchaSolved) {
+            submitOrder();
+        } else {
+            alert("Please solve the captcha before submitting the order.");
+        }
+    }
+
+    function initializeCartPage() {
+        displayCartItems();
+        displayTotalPrice();
+    }
+
+    const submitButton = document.querySelector('.submit-btn');
+    submitButton.addEventListener('click', handleFormSubmit);
+
+    displayCartItems();
+    displayTotalPrice();
+</script>
+</body>
+</html>
